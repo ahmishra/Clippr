@@ -14,4 +14,4 @@ python_dateutil==2.8.2
 unicode_slugify==0.1.5
 gunicorn==20.1.0
 gevent==21.12.0
-gevent-socketio==0.3.6
+python-socketio==5.5.1
