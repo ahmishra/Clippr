@@ -1,0 +1,428 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Fira Sans", sans-serif;
+  overflow: overlay;
+  zoom: 90%;
+}
+
+body::-webkit-scrollbar {
+  width: 0.5em;
+}
+body::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+body::-webkit-scrollbar-thumb {
+  background: purple;
+}
+
+::selection {
+  background: rgba(21, 21, 21, 1);
+  color: #fff;
+}
+
+a {
+  text-decoration: none;
+}
+
+/* BASIC CLASSES */
+.active {
+  font-weight: 900;
+}
+
+.dot {
+  color: yellow;
+  font-weight: bolder;
+}
+
+.center {
+  text-align: center;
+}
+
+.bold {
+  font-weight: bolder;
+}
+
+.sticky-top {
+  top: 2em;
+}
+
+.highlight {
+  background: url(//s2.svgbox.net/pen-brushes.svg?ic=brush-1&color=ffff43);
+  font-weight: bolder;
+}
+
+.center-div {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -moz-transform: translateX(-50%) translateY(-50%);
+  -webkit-transform: translateX(-50%) translateY(-50%);
+  transform: translateX(-50%) translateY(-50%);
+}
+/* CLOSE */
+
+/* NAVBAR */
+.navbar {
+  margin: 2rem;
+  padding: 2rem;
+  border-radius: 5px;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
+    rgba(0, 0, 0, 0.3) 0px 30px 60px -30px,
+    rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+  background-color: #fff;
+}
+
+.nav-link {
+  display: inline;
+  margin-top: 5px;
+}
+/* CLOSE */
+
+/* BRAND */
+.brand {
+  font-family: "Abril Fatface", cursive;
+  font-size: 20px;
+  font-weight: 900;
+  display: inline;
+}
+
+.brand-def {
+  font-family: "Abril Fatface", cursive;
+  font-weight: bolder;
+  color: #000;
+}
+
+.brand-hero {
+  font-family: "Abril Fatface", cursive;
+  font-weight: 900;
+  font-size: 5rem;
+}
+/* CLOSE */
+
+/* TEXT */
+.text {
+  margin-top: 2.5rem;
+}
+
+.text-hero {
+  margin-top: 3rem;
+  font-weight: 600;
+  font-size: 18px;
+}
+/* CLOSE */
+
+/* LANDING */
+.landing-text {
+  font-family: "Source Serif Pro", serif;
+}
+
+.landing-main {
+  margin-top: 10rem;
+}
+
+.landing-image {
+  margin-top: 2rem;
+}
+
+.landing {
+  /* height: 100vh; */
+  min-height: -webkit-fill-available;
+}
+/* CLOSE */
+
+/* BOUNCING ARROW - HOME */
+.arrow {
+  text-align: center;
+  margin: 10% 0;
+}
+
+.main-arrow {
+  color: turquoise;
+  text-decoration: none;
+}
+
+.bounce {
+  -moz-animation: bounce 2s infinite;
+  -webkit-animation: bounce 2s infinite;
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-30px);
+  }
+  60% {
+    transform: translateY(-15px);
+  }
+}
+/* CLOSE */
+
+/* HOVER HOME PAGE */
+.hover {
+  position: relative;
+  letter-spacing: 0.25em;
+  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+    "Lucida Sans", Arial, sans-serif;
+  font-weight: 900;
+  margin: 0 auto;
+  padding: 1rem 2.5rem;
+  background: transparent;
+  outline: none;
+  font-size: 28px;
+  color: #fff;
+  text-decoration: none;
+}
+.hover::after,
+.hover::before {
+  content: "";
+  position: absolute;
+  height: 100%;
+  width: 50%;
+  transform: skewX(30deg);
+  transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  z-index: -2;
+}
+.hover::before {
+  background-color: turquoise;
+  top: -1rem;
+  left: 0rem;
+}
+.hover::after {
+  background-color: yellow;
+  top: 1rem;
+  left: 8rem;
+}
+.hover:hover::before,
+.hover:hover::after {
+  top: 0;
+  transform: skewx(0deg);
+}
+.hover:hover::after {
+  left: 0rem;
+}
+.hover:hover::before {
+  left: 8.75rem;
+}
+.hover:hover {
+  color: #fff;
+}
+/* CLOSE */
+
+/* BUTTON HOVER GENERAL */
+.btn-hover {
+  width: 150px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  height: 40px;
+  text-align: center;
+  border: none;
+  background-size: 300% 100%;
+
+  border-radius: 50px;
+  -o-transition: all 0.4s ease-in-out;
+  -webkit-transition: all 0.4s ease-in-out;
+  transition: all 0.4s ease-in-out;
+}
+
+.btn-hover:hover {
+  background-position: 100% 0;
+  -o-transition: all 0.4s ease-in-out;
+  -webkit-transition: all 0.4s ease-in-out;
+  transition: all 0.4s ease-in-out;
+}
+
+.btn-hover:focus {
+  outline: none;
+}
+
+.btn-hover.color-1 {
+  background-image: linear-gradient(
+    to right,
+    #6253e1,
+    #852d91,
+    #a3a1ff,
+    #f24645
+  );
+  box-shadow: 0 4px 15px 0 rgba(126, 52, 161, 0.75);
+}
+
+.btn-hover.color-2 {
+  background-image: linear-gradient(
+    to right,
+    #ed6ea0,
+    #ec8c69,
+    #f7186a,
+    #fbb03b
+  );
+  box-shadow: 0 4px 15px 0 rgba(236, 116, 149, 0.75);
+}
+
+/* CLOSE */
+
+/* INPUT / FORM */
+.fancy-input {
+  width: 100%;
+  height: 40px;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  border: none;
+  padding: 2rem;
+  font-size: 14px;
+  font-weight: 200;
+  color: #000;
+  background-color: #eee;
+  margin-bottom: 15px;
+  margin-left: 0px;
+  outline: none;
+}
+
+.icon-form {
+  background-color: #eee;
+  padding: 1.4575rem;
+  display: inline-block;
+  font-size: 14px;
+  margin-right: -3.75px;
+
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+}
+/* CLOSE */
+
+/* PROFILE */
+.fa-pen {
+  color: #999;
+}
+
+.fa-pen:hover {
+  color: #555;
+}
+/* CLOSE */
+
+/* UPDATE PROFILE */
+.file-field::file-selector-button {
+  outline: none;
+  color: #555555;
+  border: 1px solid #222;
+  padding: 8px;
+  border-radius: 4px;
+  background-color: white;
+  cursor: pointer;
+  margin-right: 10px;
+  transition: 0.5s ease;
+}
+
+.file-field::file-selector-button:hover {
+  background-color: #222;
+  border: 1px solid #222;
+  color: white;
+}
+/* CLOSE */
+
+/* CLIPS */
+.card-body {
+  padding: 25px;
+}
+
+.card {
+  margin-bottom: 50px;
+}
+
+.clip-detail {
+  box-shadow: rgba(0, 0, 0, 0.09) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px,
+    rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px,
+    rgba(0, 0, 0, 0.09) 0px 32px 16px;
+}
+
+.special-link {
+  font-family: monospace;
+  text-transform: uppercase;
+}
+
+.special-link:hover {
+  text-decoration: underline;
+}
+/* CLOSE */
+
+/* LIKE */
+.heart {
+  cursor: pointer;
+  height: 50px;
+  width: 50px;
+  background-image: url("https://abs.twimg.com/a/1446542199/img/t1/web_heart_animation.png");
+  background-position: left;
+  background-repeat: no-repeat;
+  background-size: 2900%;
+  margin-left: -15px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.heart:hover {
+  background-position: right;
+}
+
+.heart-liked {
+  background-position: right;
+}
+
+.heart-liked:hover {
+  background-position: left;
+}
+/* CLOSE */
+
+/* CLIP DETAIL */
+.clip-likes-counter {
+  font-size: 12px;
+  vertical-align: middle;
+  margin-left: -15px;
+}
+
+.prompt-delete-clip {
+  cursor: pointer;
+  font-size: 12px;
+  vertical-align: middle;
+  float: right;
+  margin-top: 15px;
+}
+
+.comment {
+  background-color: #eee;
+  color: black;
+  padding: 10px;
+  padding-bottom: 5px;
+  padding-top: 20px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+.confirm-delete-clip {
+  padding: 30px;
+  box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+  border: 5px solid red;
+}
+
+.dismiss-delete-clip {
+  cursor: pointer;
+  color: cornflowerblue;
+  font-weight: 900;
+  font-family: monospace;
+  margin-right: 20px;
+}
+
+.delete-clip {
+  font-weight: 900;
+  font-family: monospace;
+  color: crimson;
+}
+/* CLOSE */

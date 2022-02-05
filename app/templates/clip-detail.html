@@ -1,0 +1,240 @@
+<!-- INITIAL -->
+{% extends "base.html" %}
+{% set active = "clip-detail" %}
+{% block title %} {{ title }} {% endblock %}
+
+{% block content %}
+<div class="container" style="margin-top: 100px; margin-bottom: 100px;">
+    <div class="jumbotron clip-detail">
+        <div class="row">
+
+            <!-- VIDEO / CLIP -->
+            <div class="col-lg">
+                <video controls style="width: 100%; height: 100%;" title="Clip">
+                    <source src="{{ url_for('static', filename='videos/' ~ clip.file) }}">
+                </video>
+            </div>
+
+            <!-- CLIP DETAILS -->
+            <div class="col-sm" style="padding: 30px;">
+                <h1 class="bold">
+                    <span>{{ clip.title }}</span>
+
+                    <!-- LIKE -->
+                    {% if current_user.has_liked_clip(clip) %}
+                    <a href="{{ url_for('like_action', clip_id=clip.clip_id, action='unlike') }}">
+                        <div class="heart unlike heart-liked" title="Dislike" id="unlike"></div>
+                    </a>
+                    {% else %}
+                    <a href="{{ url_for('like_action', clip_id=clip.clip_id, action='like') }}">
+                        <div class="heart like" title="Like" id="like"></div>
+                    </a>
+                    {% endif %}
+
+                    <!-- LIKE COUNTER -->
+                    <small class="clip-likes-counter"><span class="real-likes">{{ clip.likes|length }}</span> Like (s)</small>
+                    
+                    <!-- DELETE CLIP -->
+                    {% if current_user.user_id == clip.user.user_id %}
+                    <no-effect data-bs-toggle="modal" data-bs-target="#modal">
+                        <i class="fas fa-trash-alt prompt-delete-clip"></i>
+                    </no-effect>
+                    {% endif %}
+                </h1>
+                
+                <!-- CLIP AUTHOR -->
+                <h6 class="card-subtitle mb-2 text-muted">
+                    <img src="{{ url_for('static', filename='images/profile-pictures/' ~ clip.user.picture) }}" , height="32" width="32" style="border-radius: 50%;">
+                    <span>{{ clip.user.username }}</span>
+                </h6>
+
+                <!-- CLIP CREATE DATE -->
+                <h6 class="card-subtitle mb-2 text-muted" style="margin-top: 10px;">
+                    <span>{{ clip.created_date|standardize_date }}</span>
+                </h6>
+
+                <!-- CLIP DESC -->
+                <p class="card-text" style="margin-top: 15px; word-wrap: break-word">
+                    <span>{{ clip.description }}</span>
+                </p>
+            </div>
+        </div>
+    </div>
+    <br><br>
+
+    <!-- SUBMIT COMMENT -->
+    <div class="comments">
+        <div class="post-comment">
+            <form method="post" autocomplete="off">
+                <div class="row">
+                    <div class="col-5">
+                        <input type="text" class="fancy-input" id="comment" name="comment" placeholder="Comment">
+                    </div>
+                    <div class="col-2">
+                        <a onclick=`{{ url_for('submit_comment', clip_id=clip.clip_id) }}` id="submit-comment">
+                            <button style="height: 50px;" class="btn-hover color-1" type="submit">
+                                Post
+                            </button>
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+        
+        <br><hr><br>
+
+        <div class="all-comments">
+            {% if comments %}
+                <h1 style="font-family: monospace; font-weight: bold;">
+                    Comments - <span class="comments-counter">{{ comments|length }}</span>
+                </h1>
+                <br>
+                <!-- NEW COMMENTS HOLDER - RECEIVED FROM AJAX -->
+                <div class="new-comment-ajax"></div>
+
+                <!-- IF COMMENT POSTER IS CLIP POSTER, HIGHLIGHT COMMENT -->
+                {% for comment in comments %}
+                    <div class="comment">
+                        <h6 class="card-subtitle mb-2 text-muted bold">
+                            <img src="{{ url_for('static', filename='images/profile-pictures/' ~ comment.user.picture) }}" , height="32" width="32" style="border-radius: 50%; margin-right: 10px;">
+                            <span>{{ comment.user.username }}</span>
+                            <span>{{ comment.created_date|standardize_date }}</span>
+                        </h6>
+                        <p style="margin-top: 15px; word-wrap: break-word; margin-left: 47px;">
+                            <span>{{ comment.comment }}</span>
+                        </p>
+                    </div>
+                {% endfor %}
+                {% else %}
+                <h3 class="bold" style="font-family: monospace;">NO COMMENTS!</h3>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Modal for clip deletetion -->
+    <div class="modal fade" id="modal" aria-labelledby="modal" aria-hidden="true">
+        <div class="modal-dialog" style="padding: 30px;">
+
+            <!-- MODAL HEAD -->
+            <div class="modal-content confirm-delete-clip">
+                <div class="modal-header">
+                    <h5 class="modal-title bold" id="modal">
+                        Are you sure you want to delete '{{ clip.title }}'?
+                        <p class="text-muted bold" style="font-family: monospace;">
+                            NOTE: THIS ACTION IS IRREVERSIBLE!
+                        </p>
+                    </h5>
+                </div>
+
+                <!-- MODAL BODY -->
+                <div class="modal-body">
+                    <bold class="bold" style="font-family: monospace; font-weight: 900; font-size: 16px;"> I AGREE THAT: </bold>
+                    <span>I do want to delete this clip along with all of its comments.</span>
+                    <br><br>
+
+                    <a class="dismiss-delete-clip" data-bs-dismiss="modal">CLOSE</a>
+                    <a href="{{ url_for('delete_clip', clip_id=clip.clip_id) }}" class="delete-clip">DELETE</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Modal Opener
+$(document).ready(function () {
+    $("no-effect").click(function () {
+        $("div").removeClass("modal-backdrop");
+    });
+});
+
+// AJAX for like button
+$(document).ready(function () {
+    $(".like, .unlike").click(function () {
+        event.preventDefault();
+        var action = $(this).attr("id");
+        var clip_id = "{{ clip.clip_id }}";
+
+        $.ajax({
+            url: `/like/clip/${clip_id}/${action}`,
+            type: "GET",
+            data: {clip_id: clip_id, action: action},
+            success: function (data) {
+                if (action == "like") {
+                    $(".real-likes").text(Number($(".real-likes").text()) + 1);
+                    $(".heart").attr("class", "heart heart-liked");
+                    $(".heart").attr("id", "unlike");
+                } else {
+                    $(".real-likes").text(Number($(".real-likes").text()) - 1);
+                    $(".heart").attr("class", "heart heart-unliked");
+                    $(".heart").attr("id", "like");
+                }
+             }
+        });
+    });
+});
+
+// AJAX for submitting comment
+var months_intials = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+$(document).ready(function () {
+    $("#submit-comment").click(function (event) {
+        event.preventDefault();
+
+        // Getting the data
+        var comment = $("#comment").val();
+        var clip_id = Number("{{ clip.clip_id }}");
+        var username = "{{ current_user.username }}";
+        var userPicture = "{{ current_user.picture }}";
+        var createdDate = new Date();
+        
+        // Format date in the format of: MON DAT @ XX:XX AM-PM
+        var month = months_intials[createdDate.getMonth()];
+        var day = createdDate.getDate();
+        var hours = createdDate.getHours();
+        var minutes = createdDate.getMinutes();
+
+        var ampm = hours >= 12 ? 'PM' : 'AM';
+
+        hours = hours % 12;
+        hours = hours ? hours : 12; // The hour '0' should be '12'
+
+        // Add a zero in front of numbers < 10 (i.e padding)
+        minutes = minutes < 10 ? '0'+minutes : minutes;
+
+        // Return the formatted string
+        var strTime = month + ' ' + day + ' @ ' + hours + ':' + minutes + ' ' + ampm;
+
+        // AJAX for submitting comment
+        req = $.ajax({
+            url: "{{ url_for('submit_comment', clip_id=clip.clip_id) }}",
+            type: "POST",
+            data: {
+                comment: comment, // Comment
+                clip_id: clip_id, // Clip ID
+            },
+        });
+        
+        // Display comment, when successful
+        req.done(function (data) {
+            $(".new-comment-ajax").prepend(
+                `
+                <div class="comment">
+                    <h6 class="card-subtitle mb-2 text-muted bold">
+                        <img src="/static/images/profile-pictures/${userPicture}" , height="32" width="32" style="border-radius: 50%; margin-right: 10px;">
+                        <span>${username}</span>
+                        <span>${strTime}</span>
+                    </h6>
+                    <p style="margin-top: 15px; word-wrap: break-word; margin-left: 47px;">
+                        <span>${comment}</span>
+                    </p>
+                </div>
+                `
+            );
+
+            $(".comments-counter").text(Number($(".comments-counter").text()) + 1);
+            $("#comment").val("");
+        });
+    });
+});
+</script>
+{% endblock %}

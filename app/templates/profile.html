@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% set active = "profile" %}
+{% block title %} {{ title }} {% endblock %}
+
+{% block content %}
+<!-- Profile box -->
+<div class="container" style="margin-bottom: 50px;">
+    <div class="jumbotron" style="box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset; padding: 50px; border-radius: 10px; clear: left; margin-top: 12.5rem;">
+
+        <!-- Modern image placement -->
+        <div class="img text-center">
+            {% if picture %}
+            <img src="{{ picture }}" height="250px" width="250px" style="border-radius: 50%; margin-top: -128px;" id="profile-img">
+            {% endif %}
+        </div>
+
+        <!-- About User -->
+        {% if user %}
+        <div class="text" style="text-align: center;">
+            <h1 style="font-weight: 900; font-size: 80px; word-wrap: break-word;">{{ user.username }}</h1><span></span>
+            <!-- <h6 class="text-muted bold">Joined: {{ user.created_date.strftime('%d %B %Y') }} 🎂 | Followers: 11.8k 👋 | Clips: {{ user.clips|length }} 🎥</h6> -->
+            <h6 class="text-muted bold">Joined: {{ user.created_date.strftime('%d %B %Y') }} 🎂 | Clips: {{ user.clips|length }} 🎥</h6>
+
+            <h6 style="margin-bottom: 2rem;" class="text-muted bold"></h6>
+
+            <hr style="color: #999; height: 5px; width: 100%;">
+            <br>
+
+            <!-- About User - User -->
+            <h5>
+                {{ user.about_user }}
+            </h5>
+
+            <br><br>
+
+            {% if current_user == user %}
+            <a href="{{ url_for('update_profile') }}">
+                <i class="fas fa-pen" style="font-size: 18px; font-weight: bolder;" title="Edit profile"></i>
+            </a>
+            
+            <no-effect data-bs-toggle="modal" data-bs-target="#modal">
+                <i class="fas fa-trash" style="color: #999; font-size: 18px; cursor: pointer; font-weight: bolder; margin-left: 10px;" title="Delete Account"></i>
+            </no-effect>
+            {% endif %}
+        </div>
+        {% else %}
+        <h1 class="text-center bold" style="font-family: monospace;">
+            <code>404</code> No user found <code>404</code>
+        </h1>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modal" aria-labelledby="modal" aria-hidden="true">
+    <div class="modal-dialog" style="padding: 30px;">
+        <div class="modal-content" style="padding: 30px; box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px; border: 5px solid red;">
+            <div class="modal-header">
+                <h5 class="modal-title bold" id="modal">
+                    Are you sure you want to delete your account?
+                    <p class="text-muted bold" style="font-family: monospace;">NOTE: THIS ACTION IS IRREVERSIBLE!</p>
+                </h5>
+                
+            </div>
+
+            <div class="modal-body">
+                <bold class="bold" style="font-family: monospace; font-weight: 900; font-size: 16px;"> I AGREE THAT: </bold> I do want to delete this account along with it's clips, and comments, likes of those clips.
+                <br><br>
+                <a style="cursor: pointer; color: cornflowerblue; font-weight: 900; font-family: monospace; margin-right: 20px;" data-bs-dismiss="modal">CLOSE</a>
+                <a href="{{ url_for('delete_account') }}" style="font-weight: 900; font-family: monospace; color: crimson;">DELETE</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("no-effect").click(function () {
+            $("div").removeClass("modal-backdrop");
+        });
+    });
+</script>
+{% endblock content %}

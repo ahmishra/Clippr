@@ -1,0 +1,85 @@
+<!-- INITIAL -->
+{% extends "base.html" %}
+{% set active = "update-profile" %}
+{% block title %} {{ title }} {% endblock %}
+
+<!-- CONTENT -->
+{% block content %}
+<div class="container">
+    <div class="center-div text-center" style="box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset; width: 40rem; border-radius: 5px; margin-top: 50px;">
+        <img src="{{ url_for('static', filename='images/update-profile.png') }}" class="card-img-top" height="390px">
+    
+        <div class="card-body">
+            <!-- BRAND -->
+            <h5 class="card-title" style="font-size: 24px;">
+                <span class="brand-def">Clippr<span class="dot">.</span></span> - Update Profile
+            </h5>
+    
+            <!-- SUB -->
+            <h6 class="card-subtitle mb-2 text-muted bold" style="margin-top: 5px;">
+                Lets get your profile updated!
+            </h6>
+    
+            <br>
+    
+            <!-- FORM -->
+            <p class="card-text">
+                <form style="margin-top: 1rem;" method="post" enctype="multipart/form-data" autocomplete="off">
+                    <!-- SECURE TOKEN -->
+                    {{ form.hidden_tag() }}
+                    <!-- USERNAME -->
+                    <div class="group">
+                        <i class="fas fa-user icon-form"></i>
+                        {% if form.username.errors %}
+                        {{ form.username(placeholder="Username", class="fancy-input is-invalid", style="width: 70%;") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.username.errors %}
+                            <p style="font-weight: bolder;">{{ error }}</p>
+                            {% endfor %}
+                            <br>
+                        </div>
+                        {% else %}
+                        {{ form.username(placeholder="Username", style="width: 70%;", class="fancy-input") }}
+                        {% endif %}
+                    </div>
+        
+                    <!-- About User -->
+                    <div class="group">
+                        {% if form.about_user.errors %}
+                        {{ form.about_user(placeholder="About You", style="width: 80%; padding: 10px; min-height: 70px",
+                        class="fancy-input is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.about_user.errors %}
+                            <p style="font-weight: bolder;">{{ error }}</p>
+                            {% endfor %}
+                            <br>
+                        </div>
+                        {% else %}
+                        {{ form.about_user(placeholder="About You", style="width: 80%; padding: 10px; min-height: 70px",
+                        class="fancy-input") }}
+                        {% endif %}
+                    </div>
+        
+                    <div class="group">
+                        {% if form.picture.errors %}
+                        {{ form.picture(placeholder="Profile Picture", style="width: 80%;", class="file-field is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.picture.errors %}
+                            <p style="font-weight: bolder;">{{ error }}</p>
+                            {% endfor %}
+                            <br>
+                        </div>
+                        {% else %}
+                        <div>
+                            {{ form.picture(placeholder="Profile Picture", style="width: 80%;", class="file-field") }}
+                        </div>
+                        {% endif %}
+                    </div>
+        
+                    <button class="btn-hover color-1" type="submit" style="margin-top: 15px;">UPDATE</button>
+                </form>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock content %}

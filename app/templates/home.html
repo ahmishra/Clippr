@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% set active = "home" %}
+{% block title %} {{ title }} {% endblock %}
+
+
+{% block content %}
+<!-- Landing page -->
+<div class="container">
+    <div class="landing">
+        <div class="landing-text container">
+            <div class="row">
+                <div class="col-sm landing-main">
+                    <h1 class="brand-hero">Clippr<span class="dot">.</span> - Clip the best moments of <span
+                            class="highlight">your</span> life</h1>
+                    <p class="text-hero"
+                        style="font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;">
+                        <span class="brand-def">Clippr<span class="dot">.</span></span> is a simple, fast and easy way
+                        to
+                        save and share your
+                        favorite videos. <br>
+                        Using state of the art technologies such as machine learning, we can help you find the best
+                        clips to
+                        share. <br>
+                        For the frontend we use top end frameworks such as Flask and Bootstrap. <br>
+                    </p>
+                </div>
+
+                <!-- Landing image -->
+                <div class="col-auto landing-image">
+                    <img src="{{ url_for('static', filename='images/landing.png') }}" alt="">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bouncing arrow -->
+<div class="arrow bounce">
+    <a class="fa fa-arrow-down fa-2x main-arrow" href="#below"></a>
+</div>
+
+
+<!-- Content below -->
+<div class="below center" id="below">
+    <div class="main" style="margin-bottom: 50px;">
+        <div class="container"><a class="hover" href="{{ url_for('signup') }}">Join Now</a></div>
+    </div>
+
+    <hr style="margin-top: 0rem; margin-bottom: 30px; height: 5px; border-radius: 5px;" class="container">
+    <h2 class="brand" style="font-size: 32px;">Clippr<span class="dot">.</span></h2><br><br>
+    <span class="text-muted bold">2022 (C) All rights reserved</span><br>
+    <span class="text-muted bold">Made with 💖 by <a href="https://www.github.com/ahmishra">Aryan Mishra</a></span>
+</div>
+
+<br><br>
+{% endblock content %}

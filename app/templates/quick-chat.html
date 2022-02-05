@@ -1,0 +1,238 @@
+<!-- INITIAL -->
+{% extends "base.html" %}
+{% set active = "quick-chat" %}
+{% block title %} {{ title }} {% endblock %}
+
+{% block content %}
+
+<!-- <div class="container" style="margin-top: 50px;">
+    <h3 style='color: #ccc;font-size: 30px;'>No message yet..</h3>
+    <div class="message_holder"></div>
+    
+    <form action="" method="POST">
+        <input type="text" class="message" placeholder="Message" />
+        <input type="submit" />
+    </form>
+</div> -->
+
+<style>
+#chat {
+  height: 77.5vh;
+  position: relative;
+  background: white;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+  border-radius: 30px;
+}
+
+.chat-header {
+  padding: 30px;
+  background-color: #f5f5f5;
+  margin-bottom: 8px;
+  font-size: 22px;
+  border-top-left-radius: 30px;
+  border-top-right-radius: 30px;
+}
+
+.chat-name {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.typed-msg {
+    margin: 25px;
+    padding: 15px;
+    width: auto;
+    font-size: 18px;
+    word-break: break-word;
+    border-radius: 10px;
+}
+
+#chat form {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  padding: 10px;
+  width: calc(100% - 20px);
+}
+.message {
+  width: calc(100% - 200px);
+  box-sizing: border-box;
+  padding: 26px;
+  margin-right: 10px;
+  border-radius: 30px;
+  font-size: 22px;
+  font-weight: bold;
+  caret-color: rgba(0, 0, 0, 0.5);
+}
+.submit-msg {
+  width: 200px;
+  position: absolute;
+  box-sizing: border-box;
+  padding: 10px;
+  border: 1px solid grey;
+  cursor: pointer;
+  margin-top: 0px;
+  height: 50px;
+}
+.submit-msg:hover {
+  background: #f5f5f5;
+  color: black;
+  font-weight: 900;
+}
+
+
+.connected-clients {
+    padding: 40px;
+    margin-top: 50px;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+    border-radius: 30px;
+}
+.client-picture {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+.client-name {
+    font-weight: bold;
+    font-size: larger;
+    vertical-align: middle;
+}
+.client {
+    margin-bottom: 20px;
+    margin-top: 40px;
+}
+
+.client-sep {
+    color: grey;
+}
+
+::-webkit-scrollbar {
+  width: 13px;
+}
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  box-shadow: inset 0 0 0 4px #fff;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+#chat-s {
+  overflow-y: scroll;
+  max-height: 50vh;
+}
+
+@media screen and (max-width: 995px) {
+    #chat-s {
+        max-height: 58vh;
+    }
+}
+</style>
+
+<div class="container" style="margin-bottom: 70px;">
+    <div id="chat">
+        <div class="chat-header">
+            <span class="brand-def">Clippr<span class="dot">.</span></span> - <span style="font-weight: 900;">Quick Chat</span>
+            <br>
+            <span class="bold text-muted" style="font-size: 18px;">The chats get cleared with every refresh.</span>
+        </div>
+        <div id="chat-s"></div>
+        <form action="">
+            <input type="text" class="message fancy-input" placeholder="Type your message here...">
+            <button type="submit" class="btn-hover color-2 submit-msg">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </form>
+    </div>
+
+    <div class="connected-clients">
+        <h1 style="font-weight: 900; margin-left: 5px; margin-bottom: 30px;">Currently connected people 🌎</h1>
+        <div class="connected-clients-wrapper"></div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var socket = io("http://" + document.domain + ":" + location.port, {
+            transports: ["websocket"],
+        });
+        let username;
+        let namespace = "/";
+
+        if ("{{ current_user.username }}" == "") {
+            username = "Anonymous";
+        } else {
+            username = "{{ current_user.username }}";
+        }
+
+        socket.on("connect", function () {
+            var form = $("form").on("submit", function (e) {
+                e.preventDefault();
+
+                let message = $("input.message").val();
+                let timePosted = new Date();
+                timePosted =
+                    ("0" + timePosted.getHours()).slice(-2) +
+                    ":" +
+                    ("0" + timePosted.getMinutes()).slice(-2) +
+                    ":" +
+                    ("0" + timePosted.getSeconds()).slice(-2);
+
+                if (message.trim() == "") {
+                    $("input.message").val("").focus();
+                    return;
+                } else {
+                    socket.emit("msg", {
+                        username: username,
+                        message: message,
+                        timePosted: timePosted,
+                    });
+                    $("input.message").val("").focus();
+                }
+            });
+        });
+        socket.on("msg_response", function (msg) {
+            if (msg.username) {
+                if (msg.username == "{{ current_user.username }}") {
+                    document.getElementById(
+                        "chat-s"
+                    ).innerHTML += `<div class="typed-msg" style='background-color: #212121; color:white;'><div class="chat-name">${msg["username"]} @ ${msg["timePosted"]}</div><div class="chat-message">${msg["message"]}</div></div>`;
+                    document.querySelector("#chat input").value = "";
+                    document.getElementById("chat-s").scrollTop =
+                    document.getElementById("chat-s").scrollHeight;
+                } else {
+                    document.getElementById(
+                        "chat-s"
+                    ).innerHTML += `<div class="typed-msg" style='background-color: #f1f1f1; color:black;'><div class="chat-name">${msg["username"]} @ ${msg["timePosted"]}</div><div class="chat-message">${msg["message"]}</div></div>`;
+                    document.querySelector("#chat input").value = "";
+                    document.getElementById("chat-s").scrollTop =
+                    document.getElementById("chat-s").scrollHeight;
+                }
+            }
+        });
+        socket.on("users", function (users) {
+            if (users["joined"]) {
+                $(".connected-clients-wrapper").html("");
+                users["clients"].forEach((element) => {
+                    element = JSON.parse(element);
+                    $(".connected-clients-wrapper").append(`
+                    <div class="client" >
+                        <img src=${element["picture"]} class="client-picture">
+                        <span class="client-name"><a href="${element["link_to_profile"]}">${element["username"]}</a></span>
+                    </div><hr class='client-sep' style='height: 2px; border-radius: 10px;'>`);
+                });
+            } else {
+                $(".connected-clients-wrapper").html("");
+                users["clients"].forEach((element) => {
+                    element = JSON.parse(element);
+                    $(".connected-clients-wrapper").append(`
+                    <div class="client" >
+                        <img src=${element["picture"]} class="client-picture">
+                        <span class="client-name"><a href="${element["link_to_profile"]}">${element["username"]}</a></span>
+                    </div><hr class='client-sep' style='height: 2px; border-radius: 10px;'>`);
+                });
+            }
+        });
+    });
+</script>
+{% endblock content %}
